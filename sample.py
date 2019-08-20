@@ -84,9 +84,9 @@ with tf.Session() as session:
         samples = session.run(fake_inputs)
         samples = np.argmax(samples, axis=2)
         decoded_samples = []
-        for i in xrange(len(samples)):
+        for i in range(len(samples)):
             decoded = []
-            for j in xrange(len(samples[i])):
+            for j in range(len(samples[i])):
                 decoded.append(inv_charmap[samples[i][j]])
             decoded_samples.append(tuple(decoded))
         return decoded_samples
@@ -103,7 +103,7 @@ with tf.Session() as session:
     samples = []
     then = time.time()
     start = time.time()
-    for i in xrange(int(args.num_samples / args.batch_size)):
+    for i in range(int(args.num_samples / args.batch_size)):
         
         samples.extend(generate_samples())
 

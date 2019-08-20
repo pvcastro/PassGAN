@@ -1,6 +1,5 @@
 import string
-from pathlib2 import Path
-import unicodedata
+from pathlib import Path
 
 base_path = '/media/discoD/Mestrado/NoLeak/'
 

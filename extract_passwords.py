@@ -16,7 +16,7 @@ with open('/media/discoD/Mestrado/NoLeak/leak00.txt', mode='r') as leak_file:
             out_file.write(email_password)
             count += 1
             if count % 10000 == 0:
-                print 'Written %d passwords' % count
+                print('Written %d passwords' % count)
     #     try:
     #         write_password(email_password, ':', out_file)
     #         count += 1
@@ -33,5 +33,5 @@ with open('/media/discoD/Mestrado/NoLeak/leak00.txt', mode='r') as leak_file:
     #         except IndexError:
     #             print email_password
     #             continue
-    print 'Written %d passwords' % count
+    print('Written %d passwords' % count)
 out_file.close()
