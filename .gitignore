@@ -6,3 +6,4 @@ data/*.txt
 .ipynb_checkpoints
 .idea
 output/
+gen_passwords.txt
