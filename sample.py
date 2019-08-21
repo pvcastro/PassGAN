@@ -92,7 +92,7 @@ with tf.Session() as session:
         return decoded_samples
 
     def save(samples):
-        with open(args.output, 'a') as f:
+        with open(args.output, 'a', encoding='utf8') as f:
                 for s in samples:
                     s = "".join(s).replace('`', '')
                     f.write(s + "\n")
