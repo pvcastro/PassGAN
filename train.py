@@ -170,7 +170,7 @@ with tf.Session() as session:
 
         # Train critic
         for i in range(args.critic_iters):
-            _data = gen.next()
+            _data = next(gen)
             _disc_cost, _ = session.run(
                 [disc_cost, disc_train_op],
                 feed_dict={real_inputs_discrete:_data}
