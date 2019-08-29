@@ -4,7 +4,7 @@ import fire
 from pprint import pprint
 
 
-def get_word_counts(file_path, big_path):
+def get_word_counts(file_path, big_path, lower_limit=100):
     d = defaultdict(int)
     file_path = Path(file_path)
     big_path = Path(big_path)
@@ -18,7 +18,7 @@ def get_word_counts(file_path, big_path):
                 size = len(line)
                 d[size] += 1  # observe this bit carefully
 
-                if size > 110:
+                if size > lower_limit:
                     out.write(line + '\n\n')
                     count_written += 1
                     if count % 1000 == 0:
