@@ -2,6 +2,7 @@ from collections import defaultdict
 from pathlib import Path
 import fire
 from pprint import pprint
+from html import parser
 
 
 def get_word_counts(file_path, big_path, colon_path, pwd_path, lower_limit=100):
@@ -21,16 +22,17 @@ def get_word_counts(file_path, big_path, colon_path, pwd_path, lower_limit=100):
         count_pwd = 0
         count = 0
         for idx, line in enumerate(file):
+            line = parser.unescape(line)
             size = len(line)
             d[size] += 1  # observe this bit carefully
 
             if size > lower_limit:
-                big_out.write(line + '\n\n')
+                big_out.write(line + '\n')
                 count_written += 1
-                if count_written % 1000 == 0:
+                if count_written % 100000 == 0:
                     print('Wrote %s' % line)
             elif ':' in line:
-                colon_out.write(line + '\n\n')
+                colon_out.write(line + '\n')
                 count_colon += 1
                 if count_colon % 1000 == 0:
                     print('Wrote with colon %s' % line)
