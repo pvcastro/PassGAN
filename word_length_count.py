@@ -36,7 +36,7 @@ def get_word_counts(file_path, big_path, colon_path, lower_limit=100):
             if count % 500000 == 0:
                 print('Counted %d lines in %s file' % (count, file_path.name))
 
-            print('Counted %d lines in %s file' % (count, file_path.name))
+        print('Counted %d lines in %s file' % (count, file_path.name))
         print('Wrote %d big passwords to %s file' % (count_written, big_path.name))
         print('Wrote %d passwords with colon to %s file' % (count_colon, colon_path.name))
 
