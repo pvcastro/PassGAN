@@ -30,17 +30,17 @@ def get_word_counts(file_path, big_path, colon_path, pwd_path, lower_limit=100):
                 big_out.write(line + '\n')
                 count_written += 1
                 if count_written % 100000 == 0:
-                    print('Wrote %s' % line)
+                    print('Wrote %d big passwords' % count_written)
             elif ':' in line:
                 colon_out.write(line + '\n')
                 count_colon += 1
                 if count_colon % 1000 == 0:
-                    print('Wrote with colon %s' % line)
+                    print('Wrote %d passwords with colon' % count_colon)
             else:
                 pwd_out.write(line)
                 count_pwd += 1
                 if count_pwd % 500000 == 0:
-                    print('Wrote normal password %s' % line)
+                    print('Wrote %d normal passwords' % count_pwd)
 
             count += 1
             if count % 500000 == 0:
