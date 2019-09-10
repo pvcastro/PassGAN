@@ -1,12 +1,13 @@
 import string
 from pathlib import Path
 
-base_path = '/media/discoD/Mestrado/NoLeak/'
+base_path = Path('/media/discoD/Mestrado/NoLeak/')
 
-source_path = base_path + 'passwordsAppendSorted.txt'
+# source_path = base_path + 'passwordsAppendSorted.txt'
+source_path = base_path / 'valid_per_unicode.txt'
 # source_path = base_path + 'invalid_sample.txt'
-target_valid_path = base_path + 'valid_per_unicode.txt'
-target_invalid_path = base_path + 'invalid_per_unicode.txt'
+target_valid_path = base_path / 'valid_check.txt'
+target_invalid_path = base_path / 'invalid_check.txt'
 
 
 def is_valid(s):
@@ -20,8 +21,8 @@ def contains_invalid_unicode_characters(string_value):
     return False
 
 
-invalid_txt = Path(target_invalid_path).open(mode='w', encoding='utf8', errors='ignore')
-valid_txt = Path(target_valid_path).open(mode='w', encoding='utf8', errors='ignore')
+invalid_txt = target_invalid_path.open(mode='w', encoding='utf8', errors='ignore')
+valid_txt = target_valid_path.open(mode='w', encoding='utf8', errors='ignore')
 
 with Path(source_path).open(mode='r', encoding='utf8', errors='ignore') as sample_txt:
     count_total = 0
