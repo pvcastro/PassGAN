@@ -1,6 +1,11 @@
 from pathlib import Path
 from html import parser
 import fire, csv, pickle, utils, time
+from datetime import datetime
+
+
+def log(message):
+    print(datetime.now(), '-', message)
 
 
 def get_pwd_array(password, max_length):
@@ -13,8 +18,10 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
     source_path = Path(source_path)
     out_path = Path(out_path)
 
-    with open(Path(lms_path), 'rb') as out:
-        true_char_ngram_lms = pickle.load(out, encoding='latin1')
+    with open(Path(lms_path), 'rb') as lms:
+        log('Loading ngrams from %s' % lms_path)
+        true_char_ngram_lms = pickle.load(lms, encoding='latin1')
+        log('Finished loading ngrams')
 
     counter = 0
     counter_written = 0
@@ -25,6 +32,7 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
             fields = ['js1', 'js2', 'js3', 'js4']
             w = csv.DictWriter(out, [i for i in fields], delimiter=',', extrasaction='ignore',
                                quoting=csv.QUOTE_MINIMAL)
+            log('Created divergences file %s' % out_path)
             w.writeheader()
 
             batch = []
@@ -50,10 +58,12 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
                         batch = []
 
                 counter += 1
-                if counter % 500000 == 0:
+                if counter % 100000 == 0:
                     passwords_per_second = float(counter) / (time.time() - start_time)
-                    print('%d divergences from %d wrote to %s at %.2f passwords per second rate' % (
+                    log('%d divergences from %d wrote to %s at %.2f passwords per second rate' % (
                         counter_written, counter, out_path, passwords_per_second))
+
+            log('Finished reading lines from %s' % source_path)
 
             pwd_dict = {}
             counter_written += len(batch)
@@ -63,10 +73,10 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
                 pwd_dict['js{}'.format(i + 1)] = lm.js_with(true_char_ngram_lms[i])
             _ = w.writerow(pwd_dict)
             passwords_per_second = float(counter) / (time.time() - start_time)
-            print('%d divergences from %d wrote to %s at %.2f passwords per second rate' % (
+            log('%d divergences from %d wrote to %s at %.2f passwords per second rate' % (
                 counter_written, counter, out_path, passwords_per_second))
 
-        print('%s divergences from %d were wrote to file: %s' % (counter_written, counter, out_path))
+        log('%s divergences from %d were wrote to file: %s' % (counter_written, counter, out_path))
         out.close()
     source.close()
 
