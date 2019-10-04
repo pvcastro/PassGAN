@@ -58,7 +58,7 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
                         batch = []
 
                 counter += 1
-                if counter % 100000 == 0:
+                if counter > 0 and counter % 100000 == 0:
                     passwords_per_second = float(counter) / (time.time() - start_time)
                     log('%d divergences from %d wrote to %s at %.2f passwords per second rate' % (
                         counter_written, counter, out_path, passwords_per_second))
