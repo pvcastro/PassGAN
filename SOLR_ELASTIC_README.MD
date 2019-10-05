@@ -1,43 +1,39 @@
-GET _search
-{
-  "query": {
-    "match_all": {}
-  }
-}
-
-PUT my_index
+PUT gait
 {
   "mappings": {
     "properties": {
-      "my_dense_vector": {
+      "gait_embedding_1024": {
         "type": "dense_vector",
-        "dims": 3
+        "dims": 1024
       },
-      "my_sparse_vector" : {
-        "type" : "sparse_vector"
+      "gait_embedding_512": {
+        "type": "dense_vector",
+        "dims": 512
       },
-      "status" : {
+      "gait_embedding_128": {
+        "type": "dense_vector",
+        "dims": 128
+      },
+      "uuid" : {
         "type" : "keyword"
       }
     }
   }
 }
 
-PUT my_index/_doc/1
+PUT gait/_doc/1
 {
-  "my_dense_vector": [0.5, 10, 6],
-  "my_sparse_vector": {"2": 1.5, "15" : 2, "50": -1.1, "4545": 1.1},
-  "status" : "published"
+  "gait_embedding_1024": [0.5, 10, 6],
+  "uuid" : "uuid_value"
 }
 
-PUT my_index/_doc/2
+PUT gait/_doc/2
 {
-  "my_dense_vector": [-0.5, 10, 10],
-  "my_sparse_vector": {"2": 2.5, "10" : 1.3, "55": -2.3, "113": 1.6},
-  "status" : "published"
+  "gait_embedding_1024": [-0.5, 10, 10],
+  "uuid" : "uuid_value"
 }
 
-GET my_index/_search
+GET gait/_search
 {
   "query": {
     "script_score": {
@@ -45,13 +41,13 @@ GET my_index/_search
         "bool" : {
           "filter" : {
             "term" : {
-              "status" : "published" 
+              "uuid" : "uuid_value" 
             }
           }
         }
       },
       "script": {
-        "source": "cosineSimilarity(params.query_vector, doc['my_dense_vector']) + 1.0", 
+        "source": "cosineSimilarity(params.query_vector, doc['gait_embedding_1024']) + 1.0", 
         "params": {
           "query_vector": [4, 3.4, -0.2]  
         }
@@ -60,7 +56,7 @@ GET my_index/_search
   }
 }
 
-GET my_index/_search
+GET gait/_search
 {
   "query": {
     "script_score": {
@@ -68,37 +64,14 @@ GET my_index/_search
         "bool" : {
           "filter" : {
             "term" : {
-              "status" : "published"
-            }
-          }
-        }
-      },
-      "script": {
-        "source": "cosineSimilaritySparse(params.query_vector, doc['my_sparse_vector']) + 1.0",
-        "params": {
-          "query_vector": {"2": 0.5, "10" : 111.3, "50": -1.3, "113": 14.8, "4545": 156.0}
-        }
-      }
-    }
-  }
-}
-
-GET my_index/_search
-{
-  "query": {
-    "script_score": {
-      "query" : {
-        "bool" : {
-          "filter" : {
-            "term" : {
-              "status" : "published"
+              "uuid" : "uuid_value"
             }
           }
         }
       },
       "script": {
         "source": """
-          double value = dotProduct(params.query_vector, doc['my_dense_vector']);
+          double value = dotProduct(params.query_vector, doc['gait_embedding_1024']);
           return sigmoid(1, Math.E, -value); 
         """,
         "params": {
