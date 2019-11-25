@@ -8,6 +8,10 @@ import utils
 from pathlib import Path
 
 
+def log(message):
+    print(datetime.now(), '-', message)
+
+
 def password_to_id(charmap, password):
     return np.array([[charmap[c] for c in l] for l in password], dtype='int32')
 
@@ -76,7 +80,9 @@ def evaluate_password(lms_path, password, max_length, charmap_path=None):
     # pwd_char_ids_array = np.array(pwd_chars_ids)
 
     with open(Path(lms_path), 'rb') as f:
+        log('Loading ngrams from %s' % lms_path)
         true_char_ngram_lms = pickle.load(f, encoding='latin1')
+        log('Finished loading ngrams')
 
     for i in range(4):
         lm = utils.NgramLanguageModel(i + 1, pwd_array, tokenize=False)

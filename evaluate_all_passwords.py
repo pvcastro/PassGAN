@@ -2,6 +2,7 @@ from pathlib import Path
 from html import parser
 import fire, csv, pickle, utils, time
 from datetime import datetime
+from pprint import pprint
 
 
 def log(message):
@@ -12,6 +13,30 @@ def get_pwd_array(password, max_length):
     password += '`' * (max_length - len(password))
     char_pwd = [char for char in password]
     return tuple(char_pwd)
+
+
+def evaluate_single_password(lms_path, password, max_length=20, batch_size=10000):
+    char_pwd = get_pwd_array(password, max_length)
+    pwd_array = [tuple(char_pwd)] * batch_size
+
+    with open(Path(lms_path), 'rb') as f:
+        log('Loading ngrams from %s' % lms_path)
+        true_char_ngram_lms = pickle.load(f, encoding='latin1')
+        log('Finished loading ngrams')
+
+    result = {}
+
+    for i in range(4):
+        log('Loading {}-gram from model for password {}'.format(i, password))
+        lm = utils.NgramLanguageModel(i + 1, pwd_array, tokenize=False)
+        log('Loaded {}-gram from model for password {}'.format(i, password))
+        js_divergence = lm.js_with(true_char_ngram_lms[i])
+        print('js{}'.format(i + 1), js_divergence)
+        result[i + 1] = js_divergence
+
+    pprint(result)
+
+    return result
 
 
 def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch_size=10000):
@@ -81,4 +106,4 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
     source.close()
 
 
-if __name__ == '__main__': fire.Fire(evaluate_all_passwords)
+if __name__ == '__main__': fire.Fire()
