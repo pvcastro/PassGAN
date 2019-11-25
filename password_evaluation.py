@@ -9,20 +9,23 @@ def log(message):
     print(datetime.now(), '-', message)
 
 
+def load_char_ngram_model(lms_path):
+    with open(Path(lms_path), 'rb') as f:
+        log('Loading ngrams from %s' % lms_path)
+        true_char_ngram_lms = pickle.load(f, encoding='latin1')
+        log('Finished loading ngrams')
+    return true_char_ngram_lms
+
+
 def get_pwd_array(password, max_length):
     password += '`' * (max_length - len(password))
     char_pwd = [char for char in password]
     return tuple(char_pwd)
 
 
-def evaluate_single_password(lms_path, password, max_length=20, batch_size=10000):
+def evaluate_single_password(true_char_ngram_lms, password, max_length=20, batch_size=10000):
     char_pwd = get_pwd_array(password, max_length)
     pwd_array = [tuple(char_pwd)] * batch_size
-
-    with open(Path(lms_path), 'rb') as f:
-        log('Loading ngrams from %s' % lms_path)
-        true_char_ngram_lms = pickle.load(f, encoding='latin1')
-        log('Finished loading ngrams')
 
     result = {}
 
