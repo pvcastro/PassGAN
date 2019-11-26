@@ -3,6 +3,25 @@ from html import parser
 import fire, csv, pickle, utils, time
 from datetime import datetime
 from pprint import pprint
+import pandas as pd
+
+gan_train_divergences_path = 'data/divergences_train.csv'
+gan_generated_divergences_path = 'data/divergences_gan_gen.csv'
+
+
+def get_reference_divergences(divergences_path):
+    divergences = pd.read_csv(divergences_path).describe()
+
+    def get_max_divergence(ngram):
+        return divergences['js{}'.format(ngram)]['max']
+
+    return {1: get_max_divergence(1), 2: get_max_divergence(2), 3: get_max_divergence(3), 4: get_max_divergence(4)}
+
+
+max_train_divergences = get_reference_divergences(
+    gan_train_divergences_path)  # {1: 0.218597, 2: 0.351165, 3: 0.411383, 4: 0.461548}
+max_generated_divergences = get_reference_divergences(
+    gan_generated_divergences_path)  # {: 0.186912, 2: 0.232348, 3: 0.285541, 4: 0.350717}
 
 
 def log(message):
@@ -23,19 +42,21 @@ def get_pwd_array(password, max_length):
     return tuple(char_pwd)
 
 
-def evaluate_single_password(true_char_ngram_lms, password, max_length=20, batch_size=10000):
+def evaluate_single_password(true_char_ngram_lms, password, max_length=20, batch_size=10000, ngrams=1):
     char_pwd = get_pwd_array(password, max_length)
     pwd_array = [tuple(char_pwd)] * batch_size
 
     result = {}
 
-    for i in range(4):
+    for i in range(ngrams):
         log('Loading {}-gram from model for password {}'.format(i, password))
         lm = utils.NgramLanguageModel(i + 1, pwd_array, tokenize=False)
         log('Loaded {}-gram from model for password {}'.format(i, password))
         js_divergence = lm.js_with(true_char_ngram_lms[i])
-        print('js{}'.format(i + 1), js_divergence)
-        result[i + 1] = js_divergence
+        key = 'js{}'.format(i + 1)
+        print(key, js_divergence)
+        result[key] = js_divergence
+        result['ref_' + key] = max_train_divergences[key]
 
     pprint(result)
 

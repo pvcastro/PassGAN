@@ -22,9 +22,21 @@ batch_size = 10000
 @app.route('/evaluate', methods=['GET', 'POST'])
 def evaluate():
     password = request.args.get('password', None)
+    ngrams = request.args.get('ngrams', default=1, type=int)
 
     js_divergences = evaluate_single_password(true_char_ngram_lms=true_char_ngram_lms, password=password,
-                                              max_length=max_length, batch_size=batch_size)
+                                              max_length=max_length, batch_size=batch_size, ngrams=ngrams)
+
+    for i in range(ngrams):
+        key = 'js{}'.format(i + 1)
+        ref_key = 'ref_' + key
+        diagnostic_key = 'diag_' + key
+        divergence, reference_divergence = js_divergences[key], js_divergences[ref_key]
+        if divergence > reference_divergence:
+            diagnostic = 'A senha se diverge mais das conhecidas pela GAN, é mais segura'
+        else:
+            diagnostic = 'A senha está mais semelhante às conhecidas pela GAN, é mais fraca'
+        js_divergences[diagnostic_key] = diagnostic
 
     return jsonify(js_divergences)
 
