@@ -56,7 +56,7 @@ def evaluate_single_password(true_char_ngram_lms, password, max_length=20, batch
         key = 'js{}'.format(i + 1)
         print(key, js_divergence)
         result[key] = js_divergence
-        result['ref_' + key] = max_train_divergences[key]
+        result['ref_' + key] = max_train_divergences[i+1]
 
     pprint(result)
 
