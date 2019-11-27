@@ -134,7 +134,9 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
 def flask_evaluation(password: str, ngrams: int):
     params = {'password': password, 'ngrams': ngrams}
     response = requests.get('http://0.0.0.0:5002/evaluate', params=params)
-    print(json.loads(response.text))
+    response_json = json.loads(response.text, encoding='utf8')
+    pprint(response_json)
+    print(response_json)
 
 
 if __name__ == '__main__': fire.Fire()
