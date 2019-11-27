@@ -4,6 +4,7 @@ import fire, csv, pickle, utils, time
 from datetime import datetime
 from pprint import pprint
 import pandas as pd
+import requests, json
 
 gan_train_divergences_path = 'data/divergences_train.csv'
 gan_generated_divergences_path = 'data/divergences_gan_gen.csv'
@@ -56,7 +57,7 @@ def evaluate_single_password(true_char_ngram_lms, password, max_length=20, batch
         key = 'js{}'.format(i + 1)
         print(key, js_divergence)
         result[key] = js_divergence
-        result['ref_' + key] = max_train_divergences[i+1]
+        result['ref_' + key] = max_train_divergences[i + 1]
 
     pprint(result)
 
@@ -128,6 +129,12 @@ def evaluate_all_passwords(source_path, out_path, lms_path, max_length=20, batch
         log('%s divergences from %d were wrote to file: %s' % (counter_written, counter, out_path))
         out.close()
     source.close()
+
+
+def flask_evaluation(password: str, ngrams: int):
+    params = {'password': password, 'ngrams': ngrams}
+    response = requests.get('http://0.0.0.0:5002/evaluate', params=params)
+    print(json.loads(response.text))
 
 
 if __name__ == '__main__': fire.Fire()
