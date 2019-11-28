@@ -34,9 +34,9 @@ def evaluate():
         diagnostic_key = 'diag_' + key
         divergence, reference_divergence = js_divergences[key], js_divergences[ref_key]
         if divergence > reference_divergence:
-            diagnostic = 'A senha se diverge mais das conhecidas pela GAN, é mais segura'
+            diagnostic = 'A senha se diverge mais das conhecidas pela GAN, e mais segura'
         else:
-            diagnostic = 'A senha está mais semelhante às conhecidas pela GAN, é mais fraca'
+            diagnostic = 'A senha esta mais semelhante as conhecidas pela GAN, e mais fraca'
         js_divergences[diagnostic_key] = diagnostic
 
     return jsonify(js_divergences)
