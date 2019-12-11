@@ -7,6 +7,16 @@ def divide_chunks(l, n):
         yield l[i:i + n]
 
 
+def print_percentage(lengths, up_to=10):
+    total_passwords = sum(lengths)
+    pct = []
+    for i in range(0, 20):
+        pct.append("{0:.5%}".format(float(lengths[i] / total_passwords)))
+    print(pct)
+    up_to_pct = float(sum(lengths[0:up_to]) / total_passwords)
+    print('Percentage up to %s: %s' % (up_to, "{0:.5%}".format(up_to_pct)))
+
+
 def print_password_sizes():
     lines = open('/media/discoD/Mestrado/NoLeak/password_length_count.txt', mode='r', encoding='utf8').readlines()
     chunks = list(divide_chunks(lines, 6))
@@ -31,6 +41,9 @@ def print_password_sizes():
     print(linkedin_lengths)
     print(rockyou_lengths)
     print(passgan_lengths)
+    print_percentage(linkedin_lengths)
+    print_percentage(rockyou_lengths)
+    print_percentage(passgan_lengths)
 
 
 if __name__ == '__main__': fire.Fire(print_password_sizes)

@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-true_char_ngram_lms = load_char_ngram_model('ngram/true_char_ngram_lms.pickle')
+true_char_ngram_lms = load_char_ngram_model('output/true_char_ngram_lms.pickle')
 # true_char_ngram_lms = None
 max_length = 20
 batch_size = 10000
