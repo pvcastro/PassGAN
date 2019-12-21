@@ -18,6 +18,7 @@ true_char_ngram_lms = load_char_ngram_model('output/true_char_ngram_lms.pickle')
 # true_char_ngram_lms = None
 max_length = 20
 batch_size = 10000
+threshold = 0.3
 
 
 @app.route('/evaluate', methods=['GET', 'POST'])
@@ -25,15 +26,18 @@ def evaluate():
     password = request.args.get('password', None)
     ngrams = request.args.get('ngrams', default=1, type=int)
 
-    js_divergences = evaluate_single_password(true_char_ngram_lms=true_char_ngram_lms, password=password,
-                                              max_length=max_length, batch_size=batch_size, ngrams=ngrams)
+    js_divergences = evaluate_single_password(true_char_ngram_lms=true_char_ngram_lms, password=password, ngrams=ngrams,
+                                              max_length=max_length, batch_size=batch_size)
 
     for i in range(ngrams):
         key = 'js{}'.format(i + 1)
         ref_key = 'ref_' + key
+        ref_thresh_key = 'ref_thresh_' + key
         diagnostic_key = 'diag_' + key
         divergence, reference_divergence = js_divergences[key], js_divergences[ref_key]
-        if divergence > reference_divergence:
+        ref_threshold_divergence = reference_divergence * (1 + threshold)
+        js_divergences[ref_thresh_key] = ref_threshold_divergence
+        if divergence > ref_threshold_divergence:
             diagnostic = 'A senha se diverge mais das conhecidas pela GAN, e mais segura'
         else:
             diagnostic = 'A senha esta mais semelhante as conhecidas pela GAN, e mais fraca'

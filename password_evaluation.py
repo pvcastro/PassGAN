@@ -23,7 +23,7 @@ def get_reference_divergences(divergences_path):
 max_train_divergences = get_reference_divergences(
     gan_train_divergences_path)  # {1: 0.218597, 2: 0.351165, 3: 0.411383, 4: 0.461548}
 max_generated_divergences = get_reference_divergences(
-    gan_generated_divergences_path)  # {: 0.186912, 2: 0.232348, 3: 0.285541, 4: 0.350717}
+    gan_generated_divergences_path)  # {1: 0.186912, 2: 0.232348, 3: 0.285541, 4: 0.350717}
 
 
 def log(message):
